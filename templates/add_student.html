@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            text-align: center;
+        }
+        header {
+            background: #174a7e;
+            color: white;
+            padding: 20px;
+        }
+        form {
+            background: white;
+            max-width: 400px;
+            margin: 35px auto;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+        input, select, button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin: 10px 0;
+        }
+        button {
+            background: #174a7e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        a {
+            color: #174a7e;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Add Student</h1>
+    </header>
+
+    <form method="POST" action="/add">
+        <input type="text" name="name"
+               placeholder="Student Name" required>
+
+        <input type="text" name="department"
+               placeholder="Department (e.g. IT)" required>
+
+        <select name="year" required>
+            <option value="">Select Year</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+        </select>
+
+        <button type="submit">Save Student</button>
+
+        <p><a href="/">Home</a></p>
+    </form>
+</body>
+</html>
