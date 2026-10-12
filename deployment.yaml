@@ -1,0 +1,21 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-record-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: student-record
+  template:
+    metadata:
+      labels:
+        app: student-record
+    spec:
+      containers:
+        - name: student-record-container
+          image: sailaya/student-record-system:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
