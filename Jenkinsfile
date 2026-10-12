@@ -27,7 +27,6 @@ pipeline {
                 bat 'docker build -t %DOCKER_IMAGE% .'
             }
         }
-
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([
@@ -37,17 +36,18 @@ pipeline {
                         passwordVariable: 'DOCKERHUB_TOKEN'
                     )
                 ]) {
-                    bat '''
-                        @echo off
-                        echo %DOCKERHUB_TOKEN% | docker login -u "%DOCKERHUB_USER%" --password-stdin
-                        if errorlevel 1 exit /b 1
-                        docker push %DOCKER_IMAGE%
+                    bat
+                    @echo off
+                    docker logout
+                    echo %DOCKERHUB_TOKEN% | docker login -u "%DOCKERHUB_USER%" --password-stdin
+                    if errorlevel 1 exit /b 1
+                    docker push %DOCKER_IMAGE%
                         if errorlevel 1 exit /b 1
                         docker logout
-                    '''
                 }
             }
         }
+
 
         stage('Deploy to Kubernetes') {
             steps {
