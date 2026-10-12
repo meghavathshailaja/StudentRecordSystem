@@ -12,13 +12,15 @@ pipeline {
                 checkout scm
             }
         }
-
         stage('Python Check') {
             steps {
-                bat 'python --version'
-                bat 'python -m py_compile app.py'
+                bat '"C:\\Users\\megav\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" --version'
+                bat '"C:\\Users\\megav\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" -m py_compile app.py'
             }
         }
+
+
+       
 
         stage('Build Docker Image') {
             steps {
