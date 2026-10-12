@@ -18,6 +18,26 @@ pipeline {
                 bat '"C:\\Users\\megav\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" -m py_compile app.py'
             }
         }
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKERHUB_USER',
+                    passwordVariable: 'DOCKERHUB_TOKEN'
+                    )
+                ]) {
+                    bat(
+                        'docker logout >NUL 2>&1 & ' +
+                        'echo %DOCKERHUB_TOKEN% | docker login -u "%DOCKERHUB_USER%" --password-stdin'
+                    )
+                    bat 'docker push %DOCKER_IMAGE%'
+                    bat 'docker logout'
+                }
+            }
+        }
+        
+
 
 
        
@@ -27,27 +47,7 @@ pipeline {
                 bat 'docker build -t %DOCKER_IMAGE% .'
             }
         }
-        stage('Push to Docker Hub') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-creds',
-                        usernameVariable: 'DOCKERHUB_USER',
-                        passwordVariable: 'DOCKERHUB_TOKEN'
-                    )
-                ]) {
-                    bat
-                    @echo off
-                    docker logout
-                    echo %DOCKERHUB_TOKEN% | docker login -u "%DOCKERHUB_USER%" --password-stdin
-                    if errorlevel 1 exit /b 1
-                    docker push %DOCKER_IMAGE%
-                        if errorlevel 1 exit /b 1
-                        docker logout
-                }
-            }
-        }
-
+      
 
         stage('Deploy to Kubernetes') {
             steps {
