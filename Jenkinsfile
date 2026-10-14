@@ -45,20 +45,19 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                bat 'kubectl apply -f deployment.yaml'
-                bat 'kubectl apply -f service.yaml'
-                bat 'kubectl rollout status deployment/student-record-deployment --timeout=120s'
+                bat 'where kubectl'
+                bat 'kubectl config current-context'
+                bat 'kubectl cluster-info'
             }
         }
     }
 
     post {
         success {
-            echo 'CI/CD pipeline completed successfully!'
+            echo 'Diagnostic pipeline completed successfully!'
         }
         failure {
             echo 'Pipeline failed. Check the Jenkins console output.'
         }
     }
 }
-
