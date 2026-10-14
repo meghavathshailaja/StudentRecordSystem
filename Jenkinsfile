@@ -1,4 +1,4 @@
-
+```groovy
 pipeline {
     agent any
 
@@ -12,42 +12,36 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Python Check') {
             steps {
                 bat '"C:\\Users\\megav\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" --version'
                 bat '"C:\\Users\\megav\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" -m py_compile app.py'
             }
         }
-        stage('Push to Docker Hub') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKERHUB_USER',
-                    passwordVariable: 'DOCKERHUB_TOKEN'
-                    )
-                ]) {
-                    bat(
-                        'docker logout >NUL 2>&1 & ' +
-                        'echo %DOCKERHUB_TOKEN% | docker login -u "%DOCKERHUB_USER%" --password-stdin'
-                    )
-                    bat 'docker push %DOCKER_IMAGE%'
-                    bat 'docker logout'
-                }
-            }
-        }
-        
-
-
-
-       
 
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t %DOCKER_IMAGE% .'
             }
         }
-      
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKERHUB_USER',
+                        passwordVariable: 'DOCKERHUB_TOKEN'
+                    )
+                ]) {
+                    bat 'docker logout >NUL 2>&1'
+                    bat 'powershell -NoProfile -NonInteractive -Command "$env:DOCKERHUB_TOKEN | docker login --username $env:DOCKERHUB_USER --password-stdin"'
+                    bat 'docker push %DOCKER_IMAGE%'
+                    bat 'docker logout'
+                }
+            }
+        }
 
         stage('Deploy to Kubernetes') {
             steps {
@@ -67,3 +61,4 @@ pipeline {
         }
     }
 }
+```
