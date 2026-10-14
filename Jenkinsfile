@@ -45,16 +45,20 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                bat 'where kubectl'
-                bat 'kubectl config current-context'
-                bat 'kubectl cluster-info'
+                withEnv(['KUBECONFIG=C:\\Users\\megav\\.kube\\config']) {
+                    bat 'kubectl config current-context'
+                    bat 'kubectl get nodes'
+                    bat 'kubectl apply -f deployment.yaml'
+                    bat 'kubectl apply -f service.yaml'
+                    bat 'kubectl rollout status deployment/student-record-deployment --timeout=120s'
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Diagnostic pipeline completed successfully!'
+            echo 'CI/CD pipeline completed successfully!'
         }
         failure {
             echo 'Pipeline failed. Check the Jenkins console output.'
